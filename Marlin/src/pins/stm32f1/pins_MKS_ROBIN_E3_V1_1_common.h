@@ -19,31 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#if defined(ARDUINO_ARCH_STM32) && !defined(STM32GENERIC)
+#pragma once
 
-#include "../../inc/MarlinConfigPre.h"
+//
+// EEPROM
+//
+// Onboard I2C EEPROM
+#if NO_EEPROM_SELECTED
+  #define I2C_EEPROM
+  #define MARLIN_EEPROM_SIZE                0x1000// 4KB
+  #undef NO_EEPROM_SELECTED
+#endif
 
-#if ENABLED(USE_WATCHDOG)
+#define Z_STEP_PIN                          PC14
+#define Z_DIR_PIN                           PC15
 
-#define WDT_TIMEOUT_US TERN(WATCHDOG_DURATION_8S, 8000000, 4000000) // 4 or 8 second timeout
+#define BTN_ENC_EN                            -1
 
-#include "../../inc/MarlinConfig.h"
-
-#include "watchdog.h"
-#include <IWatchdog.h>
-
-void watchdog_init() {
-  #if DISABLED(DISABLE_WATCHDOG_INIT)
-    IWatchdog.begin(WDT_TIMEOUT_US);
-  #endif
-}
-
-void HAL_watchdog_refresh() {
-  IWatchdog.reload();
-  #if DISABLED(PINS_DEBUGGING) && PIN_EXISTS(LED)
-    TOGGLE(LED_PIN);  // heartbeat indicator
-  #endif
-}
-
-#endif // USE_WATCHDOG
-#endif // ARDUINO_ARCH_STM32 && !STM32GENERIC
+#include "pins_MKS_ROBIN_E3_common.h"
