@@ -356,6 +356,15 @@
       #define SD_DETECT_STATE LOW
     #endif
   #endif
+
+  #if DISABLED(USB_FLASH_DRIVE_SUPPORT) || BOTH(MULTI_VOLUME, VOLUME_SD_ONBOARD)
+    #if ENABLED(SDIO_SUPPORT)
+      #define NEED_SD2CARD_SDIO 1
+    #else
+      #define NEED_SD2CARD_SPI 1
+    #endif
+  #endif
+
 #endif
 
 #if ANY(HAS_GRAPHICAL_TFT, LCD_USE_DMA_FSMC, HAS_FSMC_GRAPHICAL_TFT, HAS_SPI_GRAPHICAL_TFT) || !PIN_EXISTS(SD_DETECT)
@@ -2530,7 +2539,9 @@
 #endif
 
 #if HAS_TEMPERATURE && EITHER(HAS_LCD_MENU, DWIN_CREALITY_LCD)
-  #ifdef PREHEAT_5_LABEL
+  #ifdef PREHEAT_6_LABEL
+    #define PREHEAT_COUNT 6
+  #elif defined(PREHEAT_5_LABEL)
     #define PREHEAT_COUNT 5
   #elif defined(PREHEAT_4_LABEL)
     #define PREHEAT_COUNT 4
