@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,37 +19,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#pragma once
+
+#include "../../inc/MarlinConfig.h"
+
+#if ENABLED(SERVO_DETACH_GCODE)
+
+#include "../gcode.h"
+#include "../../module/servo.h"
 
 /**
- * sd/SdFile.h
- *
- * Arduino SdFat Library
- * Copyright (c) 2009 by William Greiman
- *
- * This file is part of the Arduino Sd2Card Library
+ * M282: Detach Servo. P<index>
  */
+void GcodeSuite::M282() {
 
-#include "SdBaseFile.h"
+  if (!parser.seen('P')) return;
 
-#include <stdint.h>
+  const int servo_index = parser.value_int();
+  if (WITHIN(servo_index, 0, NUM_SERVOS - 1))
+    DETACH_SERVO(servo_index);
+  else
+    SERIAL_ECHO_MSG("Servo ", servo_index, " out of range");
 
-/**
- * \class SdFile
- * \brief SdBaseFile with Print.
- */
-class SdFile : public SdBaseFile {
- public:
-  SdFile() {}
-  SdFile(const char *name, uint8_t oflag);
-  #if ARDUINO >= 100
-    size_t write(uint8_t b);
-  #else
-    void write(uint8_t b);
-  #endif
+}
 
-  int16_t write(const void *buf, uint16_t nbyte);
-  void write(const char *str);
-  void write_P(PGM_P str);
-  void writeln_P(PGM_P str);
-};
+#endif // SERVO_DETACH_GCODE
