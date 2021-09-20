@@ -48,8 +48,8 @@
 // cz         Czech
 // da         Danish
 // de         German
-// el         Greek
-// el_gr      Greek (Greece)
+// el         Greek (Greece)
+// el_CY      Greek (Cyprus)
 // en         English
 // es         Spanish
 // eu         Basque-Euskera
@@ -165,6 +165,7 @@
 #define STR_SAVED_POS                       "Position saved"
 #define STR_RESTORING_POS                   "Restoring position"
 #define STR_INVALID_POS_SLOT                "Invalid slot. Total: "
+#define STR_DONE                            "Done."
 
 #define STR_SD_CANT_OPEN_SUBDIR             "Cannot open subdir "
 #define STR_SD_INIT_FAIL                    "No SD card"
