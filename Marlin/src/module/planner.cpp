@@ -138,7 +138,7 @@ planner_settings_t Planner::settings;           // Initialized by settings.load(
 
 uint32_t Planner::max_acceleration_steps_per_s2[DISTINCT_AXES]; // (steps/s^2) Derived from mm_per_s2
 
-float Planner::steps_to_mm[DISTINCT_AXES];      // (mm) Millimeters per step
+float Planner::mm_per_step[DISTINCT_AXES];      // (mm) Millimeters per step
 
 #if HAS_JUNCTION_DEVIATION
   float Planner::junction_deviation_mm;         // (mm) M205 J
@@ -1310,7 +1310,7 @@ void Planner::recalculate() {
  */
 void Planner::check_axes_activity() {
 
-  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z , DISABLE_I , DISABLE_J , DISABLE_K, DISABLE_E)
+  #if ANY(DISABLE_X, DISABLE_Y, DISABLE_Z, DISABLE_I, DISABLE_J, DISABLE_K, DISABLE_E)
     xyze_bool_t axis_active = { false };
   #endif
 
@@ -1702,7 +1702,7 @@ void Planner::endstop_triggered(const AxisEnum axis) {
 }
 
 float Planner::triggered_position_mm(const AxisEnum axis) {
-  return stepper.triggered_position(axis) * steps_to_mm[axis];
+  return stepper.triggered_position(axis) * mm_per_step[axis];
 }
 
 void Planner::finish_and_disable() {
@@ -1759,7 +1759,7 @@ float Planner::get_axis_position_mm(const AxisEnum axis) {
 
   #endif
 
-  return axis_steps * steps_to_mm[axis];
+  return axis_steps * mm_per_step[axis];
 }
 
 /**
@@ -1913,7 +1913,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE
 
   // Compute direction bit-mask for this block
-  uint8_t dm = 0;
+  axis_bits_t dm = 0;
   #if CORE_IS_XY
     if (da < 0) SBI(dm, X_HEAD);                // Save the toolhead's true direction in X
     if (db < 0) SBI(dm, Y_HEAD);                // ...and Y
@@ -2015,51 +2015,51 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
   } steps_dist_mm;
   #if IS_CORE
     #if CORE_IS_XY
-      steps_dist_mm.head.x = da * steps_to_mm[A_AXIS];
-      steps_dist_mm.head.y = db * steps_to_mm[B_AXIS];
-      steps_dist_mm.z      = dc * steps_to_mm[Z_AXIS];
-      steps_dist_mm.a      = (da + db) * steps_to_mm[A_AXIS];
-      steps_dist_mm.b      = CORESIGN(da - db) * steps_to_mm[B_AXIS];
+      steps_dist_mm.head.x = da * mm_per_step[A_AXIS];
+      steps_dist_mm.head.y = db * mm_per_step[B_AXIS];
+      steps_dist_mm.z      = dc * mm_per_step[Z_AXIS];
+      steps_dist_mm.a      = (da + db) * mm_per_step[A_AXIS];
+      steps_dist_mm.b      = CORESIGN(da - db) * mm_per_step[B_AXIS];
     #elif CORE_IS_XZ
-      steps_dist_mm.head.x = da * steps_to_mm[A_AXIS];
-      steps_dist_mm.y      = db * steps_to_mm[Y_AXIS];
-      steps_dist_mm.head.z = dc * steps_to_mm[C_AXIS];
-      steps_dist_mm.a      = (da + dc) * steps_to_mm[A_AXIS];
-      steps_dist_mm.c      = CORESIGN(da - dc) * steps_to_mm[C_AXIS];
+      steps_dist_mm.head.x = da * mm_per_step[A_AXIS];
+      steps_dist_mm.y      = db * mm_per_step[Y_AXIS];
+      steps_dist_mm.head.z = dc * mm_per_step[C_AXIS];
+      steps_dist_mm.a      = (da + dc) * mm_per_step[A_AXIS];
+      steps_dist_mm.c      = CORESIGN(da - dc) * mm_per_step[C_AXIS];
     #elif CORE_IS_YZ
-      steps_dist_mm.x      = da * steps_to_mm[X_AXIS];
-      steps_dist_mm.head.y = db * steps_to_mm[B_AXIS];
-      steps_dist_mm.head.z = dc * steps_to_mm[C_AXIS];
-      steps_dist_mm.b      = (db + dc) * steps_to_mm[B_AXIS];
-      steps_dist_mm.c      = CORESIGN(db - dc) * steps_to_mm[C_AXIS];
+      steps_dist_mm.x      = da * mm_per_step[X_AXIS];
+      steps_dist_mm.head.y = db * mm_per_step[B_AXIS];
+      steps_dist_mm.head.z = dc * mm_per_step[C_AXIS];
+      steps_dist_mm.b      = (db + dc) * mm_per_step[B_AXIS];
+      steps_dist_mm.c      = CORESIGN(db - dc) * mm_per_step[C_AXIS];
     #endif
     #if LINEAR_AXES >= 4
-      steps_dist_mm.i = di * steps_to_mm[I_AXIS];
+      steps_dist_mm.i = di * mm_per_step[I_AXIS];
     #endif
     #if LINEAR_AXES >= 5
-      steps_dist_mm.j = dj * steps_to_mm[J_AXIS];
+      steps_dist_mm.j = dj * mm_per_step[J_AXIS];
     #endif
     #if LINEAR_AXES >= 6
-      steps_dist_mm.k = dk * steps_to_mm[K_AXIS];
+      steps_dist_mm.k = dk * mm_per_step[K_AXIS];
     #endif
   #elif ENABLED(MARKFORGED_XY)
-    steps_dist_mm.head.x = da * steps_to_mm[A_AXIS];
-    steps_dist_mm.head.y = db * steps_to_mm[B_AXIS];
-    steps_dist_mm.z      = dc * steps_to_mm[Z_AXIS];
-    steps_dist_mm.a      = (da - db) * steps_to_mm[A_AXIS];
-    steps_dist_mm.b      = db * steps_to_mm[B_AXIS];
+    steps_dist_mm.head.x = da * mm_per_step[A_AXIS];
+    steps_dist_mm.head.y = db * mm_per_step[B_AXIS];
+    steps_dist_mm.z      = dc * mm_per_step[Z_AXIS];
+    steps_dist_mm.a      = (da - db) * mm_per_step[A_AXIS];
+    steps_dist_mm.b      = db * mm_per_step[B_AXIS];
   #else
     LINEAR_AXIS_CODE(
-      steps_dist_mm.a = da * steps_to_mm[A_AXIS],
-      steps_dist_mm.b = db * steps_to_mm[B_AXIS],
-      steps_dist_mm.c = dc * steps_to_mm[C_AXIS],
-      steps_dist_mm.i = di * steps_to_mm[I_AXIS],
-      steps_dist_mm.j = dj * steps_to_mm[J_AXIS],
-      steps_dist_mm.k = dk * steps_to_mm[K_AXIS]
+      steps_dist_mm.a = da * mm_per_step[A_AXIS],
+      steps_dist_mm.b = db * mm_per_step[B_AXIS],
+      steps_dist_mm.c = dc * mm_per_step[C_AXIS],
+      steps_dist_mm.i = di * mm_per_step[I_AXIS],
+      steps_dist_mm.j = dj * mm_per_step[J_AXIS],
+      steps_dist_mm.k = dk * mm_per_step[K_AXIS]
     );
   #endif
 
-  TERN_(HAS_EXTRUDERS, steps_dist_mm.e = esteps_float * steps_to_mm[E_AXIS_N(extruder)]);
+  TERN_(HAS_EXTRUDERS, steps_dist_mm.e = esteps_float * mm_per_step[E_AXIS_N(extruder)]);
 
   TERN_(LCD_SHOW_E_TOTAL, e_move_accumulator += steps_dist_mm.e);
 
@@ -2345,11 +2345,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
   #ifdef XY_FREQUENCY_LIMIT
 
-    static uint8_t old_direction_bits; // = 0
+    static axis_bits_t old_direction_bits; // = 0
 
     if (xy_freq_limit_hz) {
       // Check and limit the xy direction change frequency
-      const uint8_t direction_change = block->direction_bits ^ old_direction_bits;
+      const axis_bits_t direction_change = block->direction_bits ^ old_direction_bits;
       old_direction_bits = block->direction_bits;
       segment_time_us = LROUND(float(segment_time_us) / speed_factor);
 
@@ -2889,7 +2889,7 @@ bool Planner::buffer_segment(const abce_pos_t &abce
   // When changing extruders recalculate steps corresponding to the E position
   #if ENABLED(DISTINCT_E_FACTORS)
     if (last_extruder != extruder && settings.axis_steps_per_mm[E_AXIS_N(extruder)] != settings.axis_steps_per_mm[E_AXIS_N(last_extruder)]) {
-      position.e = LROUND(position.e * settings.axis_steps_per_mm[E_AXIS_N(extruder)] * steps_to_mm[E_AXIS_N(last_extruder)]);
+      position.e = LROUND(position.e * settings.axis_steps_per_mm[E_AXIS_N(extruder)] * mm_per_step[E_AXIS_N(last_extruder)]);
       last_extruder = extruder;
     }
   #endif
@@ -3168,11 +3168,11 @@ void Planner::reset_acceleration_rates() {
 }
 
 /**
- * Recalculate 'position' and 'steps_to_mm'.
+ * Recalculate 'position' and 'mm_per_step'.
  * Must be called whenever settings.axis_steps_per_mm changes!
  */
 void Planner::refresh_positioning() {
-  LOOP_DISTINCT_AXES(i) steps_to_mm[i] = 1.0f / settings.axis_steps_per_mm[i];
+  LOOP_DISTINCT_AXES(i) mm_per_step[i] = 1.0f / settings.axis_steps_per_mm[i];
   set_position_mm(current_position);
   reset_acceleration_rates();
 }
