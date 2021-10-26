@@ -1308,8 +1308,8 @@
 
 // LCD Print Progress options
 #if EITHER(SDSUPPORT, LCD_SET_PROGRESS_MANUALLY)
-  #if ANY(HAS_MARLINUI_U8GLIB, EXTENSIBLE_UI, HAS_MARLINUI_HD44780, IS_TFTGLCD_PANEL, IS_DWIN_MARLINUI)
-    #define SHOW_REMAINING_TIME         // Display estimated time to completion
+  #if CAN_SHOW_REMAINING_TIME
+    //#define SHOW_REMAINING_TIME         // Display estimated time to completion
     #if ENABLED(SHOW_REMAINING_TIME)
       #define USE_M73_REMAINING_TIME    // Use remaining time from M73 command instead of estimation
       #define ROTATE_PROGRESS_DISPLAY   // Display (P)rogress, (E)lapsed, and (R)emaining time
@@ -2008,7 +2008,7 @@
     #define PTC_PROBE_POS  { 90, 100 }
 
     // Enable additional compensation using hotend temperature
-    // Note: this values cannot be calibrated automatically but have to be set manually
+    // Note: this values cannot be calibrated automatically but have to be set manually via M871.
     //#define USE_TEMP_EXT_COMPENSATION
 
     // Probe temperature calibration generates a table of values starting at PTC_SAMPLE_START
@@ -2023,6 +2023,12 @@
     //#define BTC_SAMPLE_START  60  // (°C)
     //#define BTC_SAMPLE_RES     5  // (°C)
     //#define BTC_SAMPLE_COUNT  10
+
+    #if ENABLED(USE_TEMP_EXT_COMPENSATION)
+      //#define ETC_SAMPLE_START 180  // (°C)
+      //#define ETC_SAMPLE_RES     5  // (°C)
+      //#define ETC_SAMPLE_COUNT  20
+    #endif
 
     // The temperature the probe should be at while taking measurements during bed temperature
     // calibration.
