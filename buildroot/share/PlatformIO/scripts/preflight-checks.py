@@ -52,6 +52,11 @@ if pioutil.is_pio_build():
 		if 'PIOENV' not in env:
 			raise SystemExit("Error: PIOENV is not defined. This script is intended to be used with PlatformIO")
 
+		# Require PlatformIO 6.1.1 or later
+		vers = pioutil.get_pio_version()
+		if vers < [6, 1, 1]:
+			raise SystemExit("Error: Marlin requires PlatformIO >= 6.1.1. Use 'pio upgrade' to get a newer version.")
+
 		if 'MARLIN_FEATURES' not in env:
 			raise SystemExit("Error: this script should be used after common Marlin scripts")
 
@@ -81,10 +86,12 @@ if pioutil.is_pio_build():
 		#
 		# Give warnings on every build
 		#
-		srcpath = os.path.join(env['PROJECT_BUILD_DIR'], build_env, "src", "src")
-		warnfile = os.path.join(srcpath, "inc", "Warnings.cpp.o")
-		if os.path.exists(warnfile):
-			os.remove(warnfile)
+		build_dir = os.path.join(env['PROJECT_BUILD_DIR'], build_env);
+		for outdir in [ build_dir, os.path.join(build_dir, "debug") ]:
+			for wext in [ ".cpp", "" ]:
+				warnfile = os.path.join(outdir, "src", "src", "inc", "Warnings" + wext + ".o")
+				if os.path.exists(warnfile):
+					os.remove(warnfile)
 
 		#
 		# Rebuild 'settings.cpp' for EEPROM_INIT_NOW
