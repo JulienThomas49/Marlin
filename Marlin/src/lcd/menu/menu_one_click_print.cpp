@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2023 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,16 +19,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include <stdint.h>
+#include "../../inc/MarlinConfigPre.h"
 
-typedef uint32_t millis_t;
+#if ENABLED(ONE_CLICK_PRINT)
 
-#define SEC_TO_MS(N) millis_t((N)*1000UL)
-#define MIN_TO_MS(N) SEC_TO_MS((N)*60UL)
-#define MS_TO_SEC(N) millis_t((N)/1000UL)
-#define MS_TO_SEC_PRECISE(N) (float(N)/1000.0f)
+#include "menu.h"
 
-#define PENDING(NOW,SOON) ((int32_t)(NOW-(SOON))<0)
-#define ELAPSED(NOW,SOON) (!PENDING(NOW,SOON))
+void one_click_print() {
+  ui.goto_screen([]{
+    char * const filename = card.longest_filename();
+    MenuItem_confirm::select_screen(
+      GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
+      []{
+        card.openAndPrintFile(card.filename);
+        ui.return_to_status();
+        ui.reset_status();
+      }, nullptr,
+      GET_TEXT_F(MSG_START_PRINT), filename, F("?")
+    );
+  });
+}
+
+#endif // ONE_CLICK_PRINT
