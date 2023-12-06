@@ -97,17 +97,12 @@
 #define MENU_CHAR_LIMIT  24
 #define STATUS_Y        354
 
-// Print speed limit
-#define MIN_PRINT_SPEED  10
-#define MAX_PRINT_SPEED 999
-
 #define FEEDRATE_E      (60)
 
 // Minimum unit (0.1) : multiple (10)
 #define UNITFDIGITS 1
 #define MINUNITMULT pow(10, UNITFDIGITS)
 
-#define ENCODER_WAIT_MS                  20
 #define DWIN_VAR_UPDATE_INTERVAL         1024
 #define DWIN_SCROLL_UPDATE_INTERVAL      SEC_TO_MS(2)
 #define DWIN_REMAIN_TIME_UPDATE_INTERVAL SEC_TO_MS(20)
@@ -1559,7 +1554,7 @@ void hmiPrintSpeed() {
     return;
   }
   // printSpeed limit
-  LIMIT(hmiValues.printSpeed, MIN_PRINT_SPEED, MAX_PRINT_SPEED);
+  LIMIT(hmiValues.printSpeed, SPEED_EDIT_MIN, SPEED_EDIT_MAX);
   // printSpeed value
   drawEditInteger3(select_tune.now + MROWS - index_tune, hmiValues.printSpeed, true);
 }
