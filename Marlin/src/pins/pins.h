@@ -270,6 +270,10 @@
   #include "ramps/pins_PANOWIN_CUTLASS.h"           // ATmega2560                           env:mega2560ext
 #elif MB(KODAMA_BARDO)
   #include "ramps/pins_KODAMA_BARDO.h"              // ATmega2560                           env:mega2560ext
+#elif MB(XTLW_MFF_V1)
+  #include "ramps/pins_XTLW_MFF_V1.h"               // ATmega2560                           env:mega2560
+#elif MB(XTLW_MFF_V2)
+  #include "ramps/pins_XTLW_MFF_V2.h"               // ATmega2560                           env:mega2560
 
 //
 // RAMBo and derivatives
@@ -504,6 +508,8 @@
   #include "lpc1769/pins_BTT_SKR_E3_TURBO.h"        // LPC1769                              env:LPC1769
 #elif MB(FLY_CDY)
   #include "lpc1769/pins_FLY_CDY.h"                 // LPC1769                              env:LPC1769
+#elif MB(XTLW_CLIMBER_8TH_LPC)
+  #include "lpc1769/pins_XTLW_CLIMBER_8TH_LPC.h"    // LPC1769                              env:LPC1769
 
 //
 // Due (ATSAM) boards
@@ -564,15 +570,15 @@
 #elif MB(BTT_SKR_MINI_E3_V3_0)
   #include "stm32g0/pins_BTT_SKR_MINI_E3_V3_0.h"    // STM32G0                              env:STM32G0B1RE_btt env:STM32G0B1RE_btt_xfer
 #elif MB(BTT_MANTA_M4P_V2_1)
-  #include "stm32g0/pins_BTT_MANTA_M4P_V2_1.h"      // STM32G0                              env:STM32G0B1RE_manta_btt env:STM32G0B1RE_manta_btt_xfer
+  #include "stm32g0/pins_BTT_MANTA_M4P_V2_1.h"      // STM32G0                              env:STM32G0B1RE_manta_btt
 #elif MB(BTT_MANTA_M5P_V1_0)
-  #include "stm32g0/pins_BTT_MANTA_M5P_V1_0.h"      // STM32G0                              env:STM32G0B1RE_manta_btt env:STM32G0B1RE_manta_btt_xfer
+  #include "stm32g0/pins_BTT_MANTA_M5P_V1_0.h"      // STM32G0                              env:STM32G0B1RE_manta_btt
 #elif MB(BTT_MANTA_E3_EZ_V1_0)
-  #include "stm32g0/pins_BTT_MANTA_E3_EZ_V1_0.h"    // STM32G0                              env:STM32G0B1RE_manta_btt env:STM32G0B1RE_manta_btt_xfer
+  #include "stm32g0/pins_BTT_MANTA_E3_EZ_V1_0.h"    // STM32G0                              env:STM32G0B1RE_manta_btt
 #elif MB(BTT_MANTA_M8P_V1_0)
-  #include "stm32g0/pins_BTT_MANTA_M8P_V1_0.h"      // STM32G0                              env:STM32G0B1VE_btt env:STM32G0B1VE_btt_xfer
+  #include "stm32g0/pins_BTT_MANTA_M8P_V1_0.h"      // STM32G0                              env:STM32G0B1VE_btt
 #elif MB(BTT_MANTA_M8P_V1_1)
-  #include "stm32g0/pins_BTT_MANTA_M8P_V1_1.h"      // STM32G0                              env:STM32G0B1VE_btt env:STM32G0B1VE_btt_xfer
+  #include "stm32g0/pins_BTT_MANTA_M8P_V1_1.h"      // STM32G0                              env:STM32G0B1VE_btt
 
 //
 // STM32 ARM Cortex-M3
@@ -828,6 +834,8 @@
   #include "stm32f4/pins_MELLOW_FLY_E3_V2.h"        // STM32F4                              env:FLY_E3_V2
 #elif MB(BLACKBEEZMINI_V1)
   #include "stm32f4/pins_BLACKBEEZMINI.h"           // STM32F4                              env:BLACKBEEZMINI_V1
+#elif MB(XTLW_CLIMBER_8TH)
+  #include "stm32f4/pins_XTLW_CLIMBER_8TH.h"        // STM32F4                              env:XTLW_CLIMBER_8TH
 
 //
 // ARM Cortex-M7
@@ -980,8 +988,6 @@
     #error "BOARD_BIQU_SKR_V1_1 is now BOARD_BTT_SKR_V1_1. Please update your configuration."
   #elif MB(BIGTREE_SKR_V1_1)
     #error "BOARD_BIGTREE_SKR_V1_1 is now BOARD_BTT_SKR_V1_1. Please update your configuration."
-  #elif MB(BIGTREE_SKR_V1_2)
-    #error "BOARD_BIGTREE_SKR_V1_2 is now BOARD_BTT_SKR_V1_2. Please update your configuration."
   #elif MB(BIGTREE_SKR_V1_3)
     #error "BOARD_BIGTREE_SKR_V1_3 is now BOARD_BTT_SKR_V1_3. Please update your configuration."
   #elif MB(BIGTREE_SKR_V1_4)

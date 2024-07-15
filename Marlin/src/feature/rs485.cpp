@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2024 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,30 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+#include "../inc/MarlinConfig.h"
 
-#ifdef __PLAT_NATIVE_SIM__
+#if HAS_RS485_SERIAL
 
-#include "../../inc/MarlinConfig.h"
-#include "pinsDebug.h"
+#include "rs485.h"
 
-int8_t ADC_pin_mode(pin_t pin) { return -1; }
+HardwareSerialBusIO rs485BusIO(&RS485_SERIAL);
+RS485Bus<RS485_BUS_BUFFER_SIZE> rs485Bus(rs485BusIO, RS485_RX_ENABLE_PIN, RS485_TX_ENABLE_PIN);
 
-int8_t get_pin_mode(const pin_t pin) { return isValidPin(pin) ? 0 : -1; }
+PhotonProtocol rs485Protocol;
 
-bool getValidPinMode(const pin_t pin) {
-  const int8_t pin_mode = get_pin_mode(pin);
-  if (pin_mode == -1 || pin_mode == ADC_pin_mode(pin)) // Invalid pin or active analog pin
-    return false;
+Packetizer rs485Packetizer(rs485Bus, rs485Protocol);
 
-  return (Gpio::getMode(pin) != 0); // Input/output state
-}
+uint8_t rs485Buffer[RS485_SEND_BUFFER_SIZE];
 
-bool getPinIsDigitalByIndex(const pin_t pin) {
-  return !isAnalogPin(pin) || get_pin_mode(pin) != ADC_pin_mode(pin);
-}
+void rs485_init() { RS485_SERIAL.begin(57600); }
 
-void printPinPort(const pin_t) {}
-void printPinPWM(const pin_t) {}
-bool pwm_status(const pin_t) { return false; }
-
-#endif
+#endif // HAS_RS485_SERIAL
