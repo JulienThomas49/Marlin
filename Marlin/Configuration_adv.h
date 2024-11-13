@@ -1095,10 +1095,9 @@
 #if ENABLED(ASSISTED_TRAMMING)
 
 // Define from 3 to 9 points to probe.
-#define TRAMMING_POINT_XY                        \
-  {                                              \
-    {20, 20}, {180, 20}, {180, 180}, { 20, 180 } \
-  }
+#define TRAMMING_POINT_XY \
+  {                       \
+      {20, 20}, {180, 20}, {180, 180}, {20, 180}}
 
 // Define position names for probe points.
 #define TRAMMING_POINT_NAME_1 "Front-Left"
@@ -1267,10 +1266,6 @@
 // Default Minimum Feedrates for printing and travel moves
 #define DEFAULT_MINIMUMFEEDRATE 0.0   // (mm/s) Minimum feedrate. Set with M205 S.
 #define DEFAULT_MINTRAVELFEEDRATE 0.0 // (mm/s) Minimum travel feedrate. Set with M205 T.
-#if HAS_ROTATIONAL_AXES
-#define DEFAULT_ANGULAR_MINIMUMFEEDRATE 0.0   // (°/s) Minimum feedrate for rotational-only moves. Set with M205 P.
-#define DEFAULT_ANGULAR_MINTRAVELFEEDRATE 0.0 // (°/s) Minimum travel feedrate for rotational-only moves. Set with M205 Q.
-#endif
 
 // Minimum time that a segment needs to take as the buffer gets emptied
 #define DEFAULT_MINSEGMENTTIME 20000 // (µs) Set with M205 B.
@@ -4460,9 +4455,7 @@
   {4.4, 871},                        \
       {10.0, 1393},                  \
       {4.4, 871},                    \
-  {                                  \
-    10.0, 198                        \
-  }
+      {10.0, 198}
 
 #define MMU2_RAMMING_SEQUENCE \
   {1.0, 1000},                \
@@ -4475,9 +4468,7 @@
       {-6.0, 600},            \
       {10.0, 700},            \
       {-10.0, 400},           \
-  {                           \
-    -50.0, 2000               \
-  }
+      {-50.0, 2000}
 
 #endif // HAS_PRUSA_MMU2
 
