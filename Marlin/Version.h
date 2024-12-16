@@ -28,7 +28,7 @@
 /**
  * Marlin release version identifier
  */
-//#define SHORT_BUILD_VERSION "bugfix-2.1.x"
+//#define SHORT_BUILD_VERSION "2.1.3-beta2"
 
 /**
  * Verbose version identifier which should contain a reference to the location
@@ -41,7 +41,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-//#define STRING_DISTRIBUTION_DATE "2024-11-28"
+//#define STRING_DISTRIBUTION_DATE "2024-12-16"
 
 /**
  * The protocol for communication to the host. Protocol indicates communication
