@@ -131,6 +131,7 @@
 
 // Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "Ender-3"
+// #define CONFIGURABLE_MACHINE_NAME // Add G-code M550 to set/report the machine name
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -588,7 +589,7 @@
 #define DUMMY_THERMISTOR_998_VALUE 25
 #define DUMMY_THERMISTOR_999_VALUE 100
 
-// Resistor values when using MAX31865 sensors (-5) on TEMP_SENSOR_0 / 1
+// Resistor values when using MAX31865 sensors (-5) on TEMP_SENSOR_0 / 1 / 2 / BED
 #if TEMP_SENSOR_IS_MAX_TC(0)
 #define MAX31865_SENSOR_OHMS_0 100      // (Ω) Typically 100 or 1000 (PT100 or PT1000)
 #define MAX31865_CALIBRATION_OHMS_0 430 // (Ω) Typically 430 for Adafruit PT100; 4300 for Adafruit PT1000
@@ -697,6 +698,7 @@
 #define PID_K1 0.95 // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
+// #define MIN_POWER 0
 // #define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to toggle activation.
 // #define PID_PARAMS_PER_HOTEND // Use separate PID parameters for each extruder (useful for mismatched extruders)
 //  Set/get with G-code: M301 E[extruder number, 0-2]
@@ -2928,6 +2930,15 @@
 // This LCD is known to be susceptible to electrical interference
 // which scrambles the display.  Pressing any button clears it up.
 // This is a LCD2004 display with 5 analog buttons.
+/**
+ * ANET and Tronxy 20x4 Controller
+ * LCD2004 display with 5 analog buttons.
+ *
+ * NOTE: Requires ADC_KEYPAD_PIN to be assigned to an analog pin.
+ * This LCD is known to be susceptible to electrical interference which
+ * scrambles the display. Press any button to clear it up.
+ */
+// #define ZONESTAR_LCD
 
 //
 // Generic 16x2, 16x4, 20x2, or 20x4 character-based LCD.
@@ -3573,22 +3584,31 @@
 // :[1,2,3,4,5,6,7,8]
 // #define NUM_M106_FANS 1
 
-// Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
-// which is not as annoying as with the hardware PWM. On the other hand, if this frequency
-// is too low, you should also increment SOFT_PWM_SCALE.
+/**
+ * Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
+ * which is not as annoying as with the hardware PWM. On the other hand, if this frequency
+ * is too low, you should also increment SOFT_PWM_SCALE.
+ */
 #define FAN_SOFT_PWM
 
-// Incrementing this by 1 will double the software PWM frequency,
-// affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
-// However, control resolution will be halved for each increment;
-// at zero value, there are 128 effective control positions.
-// :[0,1,2,3,4,5,6,7]
+/**
+ * Incrementing this by 1 will double the software PWM frequency, affecting heaters, and
+ * the fan if FAN_SOFT_PWM is enabled. However, control resolution will be halved for each
+ * increment; at zero value, there are 128 effective control positions.
+ * :[0,1,2,3,4,5,6,7]
+ */
 #define SOFT_PWM_SCALE 0
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
 // some of the PWM cycles are stretched so on average the desired
 // duty cycle is attained.
+// #define SOFT_PWM_DITHER
+/**
+ * If SOFT_PWM_SCALE is set to a value higher than 0, dithering can be used to mitigate the
+ * associated resolution loss. If enabled, some of the PWM cycles are stretched so on average
+ * the desired duty cycle is attained.
+ */
 // #define SOFT_PWM_DITHER
 
 // @section extras
@@ -3601,6 +3621,12 @@
 // Temperature status LEDs that display the hotend and bed temperature.
 // If all hotends, bed temperature, and target temperature are under 54C
 // then the BLUE led is on. Otherwise the RED led is on. (1C hysteresis)
+// #define TEMP_STAT_LEDS
+/**
+ * Temperature status LEDs that display the hotend and bed temperature.
+ * If all hotends, bed temperature, and target temperature are under 54C
+ * the BLUE led is on. Otherwise the RED led is on. (1C hysteresis)
+ */
 // #define TEMP_STAT_LEDS
 
 // Support for BlinkM/CyzRgb
