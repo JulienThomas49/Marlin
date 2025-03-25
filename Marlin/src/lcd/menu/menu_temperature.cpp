@@ -45,58 +45,34 @@
 
 #if HAS_PREHEAT
 
-  void Temperature::lcd_preheat(const uint8_t e, const int8_t indh/*=-1*/, const int8_t indb/*=-1*/, const int8_t indc/*=-1*/) {
-    UNUSED(e); UNUSED(indh); UNUSED(indb); UNUSED(indc);
-    #if HAS_HOTEND
-      if (indh >= 0 && ui.material_preset[indh].hotend_temp > 0) setTargetHotend(ui.material_preset[indh].hotend_temp, e);
-    #endif
-    #if HAS_HEATED_BED
-      if (indb >= 0 && ui.material_preset[indb].bed_temp > 0) setTargetBed(ui.material_preset[indb].bed_temp);
-    #endif
-    #if HAS_HEATED_CHAMBER
-      if (indc >= 0 && ui.material_preset[indc].chamber_temp > 0) setTargetChamber(ui.material_preset[indc].chamber_temp);
-    #endif
-    #if HAS_FAN
-      if (indh >= 0) {
-        const uint8_t fan_index = active_extruder < (FAN_COUNT) ? active_extruder : 0;
-        if (true
-          #if REDUNDANT_PART_COOLING_FAN
-            && fan_index != REDUNDANT_PART_COOLING_FAN
-          #endif
-        ) set_fan_speed(fan_index, ui.material_preset[indh].fan_speed);
-      }
-    #endif
-    ui.return_to_status();
-  }
-
   #if HAS_TEMP_HOTEND
-    inline void _preheat_end(const uint8_t e, const uint8_t m) { thermalManager.lcd_preheat(e, m); }
-    void do_preheat_end_m() { _preheat_end(0, editable.int8); }
+    inline void _preheat_end(const uint8_t m, const uint8_t e) { ui.preheat_hotend(m, e); ui.return_to_status(); }
+    void do_preheat_end_m() { _preheat_end(editable.int8, 0); }
   #endif
   #if HAS_HEATED_BED
-    inline void _preheat_bed(const uint8_t m) { thermalManager.lcd_preheat(0, -1, m); }
+    inline void _preheat_bed(const uint8_t m) { ui.preheat_bed(m); ui.return_to_status(); }
   #endif
   #if HAS_HEATED_CHAMBER
-    inline void _preheat_chamber(const uint8_t m) { thermalManager.lcd_preheat(0, -1, -1, m); }
+    inline void _preheat_chamber(const uint8_t m) { ui.preheat_chamber(m); ui.return_to_status(); }
   #endif
   #if HAS_COOLER
-    inline void _precool_laser(const uint8_t e, const uint8_t m) { thermalManager.lcd_preheat(e, m); }
-    void do_precool_laser_m() { _precool_laser(thermalManager.temp_cooler.target, editable.int8); }
+    inline void _precool_laser(const uint8_t m, const uint8_t e) { ui.preheat_hotend(m, e);  ui.return_to_status(); }
+    void do_precool_laser_m() { _precool_laser(editable.int8, thermalManager.temp_cooler.target); }
   #endif
 
   #if HAS_TEMP_HOTEND && (HAS_HEATED_BED || HAS_HEATED_CHAMBER)
-    inline void _preheat_all(const uint8_t e, const uint8_t m) { thermalManager.lcd_preheat(e, m, m, m); }
+    inline void _preheat_all(const uint8_t m, const uint8_t e) { ui.preheat_all(m, e); ui.return_to_status(); }
 
     // Indexed "Preheat ABC" and "Heat Bed" items
     #define PREHEAT_ITEMS(M,E) do{ \
-      ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_H, []{ _preheat_all(MenuItemBase::itemIndex, M); }); \
-      ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_END_E, []{ _preheat_end(MenuItemBase::itemIndex, M); }); \
+      ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_H, []{ _preheat_all(M, MenuItemBase::itemIndex); }); \
+      ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_END_E, []{ _preheat_end(M, MenuItemBase::itemIndex); }); \
     }while(0)
 
   #elif HAS_MULTI_HOTEND
 
     // No heated bed, so just indexed "Preheat ABC" items
-    #define PREHEAT_ITEMS(M,E) ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_H, []{ _preheat_end(MenuItemBase::itemIndex, M); })
+    #define PREHEAT_ITEMS(M,E) ACTION_ITEM_N_f(E, ui.get_preheat_label(M), MSG_PREHEAT_M_H, []{ _preheat_end(M, MenuItemBase::itemIndex); })
 
   #endif
 
@@ -113,7 +89,7 @@
       #if HOTENDS == 1
 
         #if HAS_HEATED_BED || HAS_HEATED_CHAMBER
-          ACTION_ITEM_f(ui.get_preheat_label(m), MSG_PREHEAT_M, []{ _preheat_all(0, editable.int8); });
+          ACTION_ITEM_f(ui.get_preheat_label(m), MSG_PREHEAT_M, []{ _preheat_all(editable.int8, 0); });
           ACTION_ITEM_f(ui.get_preheat_label(m), MSG_PREHEAT_M_END, do_preheat_end_m);
         #else
           ACTION_ITEM_f(ui.get_preheat_label(m), MSG_PREHEAT_M, do_preheat_end_m);
