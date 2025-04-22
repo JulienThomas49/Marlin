@@ -698,8 +698,9 @@
 #define PID_K1 0.95 // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
-// #define MIN_POWER 0
-// #define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to toggle activation.
+// #define MIN_POWER 0           // Min power to improve PID stability (0..PID_MAX).
+//  Get the power from the temperature report ('M105' => @:nnn) and try P*2-20 to P*2-10.
+// #define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to enable/disable.
 // #define PID_PARAMS_PER_HOTEND // Use separate PID parameters for each extruder (useful for mismatched extruders)
 //  Set/get with G-code: M301 E[extruder number, 0-2]
 
@@ -798,8 +799,9 @@
 #define PIDTEMPBED
 
 #if ENABLED(PIDTEMPBED)
-// #define MIN_BED_POWER 0
-// #define PID_BED_DEBUG // Print Bed PID debug data to the serial port.
+// #define MIN_BED_POWER 0   // Min power to improve PID stability (0..MAX_BED_POWER).
+//  Get the power from the temperature report ('M105' => B@:nnn) and try P*2-20 to P*2-10.
+// #define PID_BED_DEBUG     // Print Bed PID debug data to the serial port. Use 'M303 D' to enable/disable.
 
 // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
@@ -880,12 +882,12 @@
 #define MAX_CHAMBER_POWER 255 // limits duty cycle to chamber heater; 255=full current
 
 #if ENABLED(PIDTEMPCHAMBER)
-#define MIN_CHAMBER_POWER 0
-// #define PID_CHAMBER_DEBUG // Print Chamber PID debug data to the serial port.
+// #define MIN_CHAMBER_POWER 0 // Min power to improve PID stability. (0..MAX_CHAMBER_POWER)
+//  Get the power from the temperature report ('M105' => C@:nnn) and try P*2-20 to P*2-10.
+// #define PID_CHAMBER_DEBUG   // Print Chamber PID debug data to the serial port. Use 'M303 D' to enable/disable.
 
 // Lasko "MyHeat Personal Heater" (200w) modified with a Fotek SSR-10DA to control only the heating element
 // and placed inside the small Creality printer enclosure tent.
-//
 #define DEFAULT_chamberKp 37.04
 #define DEFAULT_chamberKi 1.40
 #define DEFAULT_chamberKd 655.17
@@ -899,7 +901,7 @@
 #if ANY(PIDTEMP, PIDTEMPBED, PIDTEMPCHAMBER)
 // #define PID_OPENLOOP          // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
 // #define SLOW_PWM_HEATERS      // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
-#define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
+#define PID_FUNCTIONAL_RANGE 20 // If the temperature difference between the target temperature and the actual temperature
                                 // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
 
 // #define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of flash)
@@ -2287,8 +2289,8 @@
 //=================================== Mesh ==================================
 //===========================================================================
 
-#define MESH_INSET 10       // Set Mesh bounds as an inset region of the bed
-#define GRID_MAX_POINTS_X 5 // Don't use more than 7 points per axis, implementation limited.
+#define MESH_INSET 10 // Set Mesh bounds as an inset region of the bed
+#define GRID_MAX_POINTS_X 5
 #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
 // #define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
@@ -3314,7 +3316,7 @@
 #endif
 
 //
-// Touch-screen LCD for Malyan M200/M300 printers
+// LCD for Malyan M200/M300 printers
 //
 // #define MALYAN_LCD
 
