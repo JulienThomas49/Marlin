@@ -868,8 +868,6 @@ static_assert(COUNT(arm) == LOGICAL_AXES, "AXIS_RELATIVE_MODES must contain " _L
       #error "SMOOTH_LIN_ADVANCE requires a 32-bit CPU."
     #elif ENABLED(S_CURVE_ACCELERATION)
       #error "SMOOTH_LIN_ADVANCE is not compatible with S_CURVE_ACCELERATION."
-    #elif ENABLED(NONLINEAR_EXTRUSION)
-      #error "SMOOTH_LIN_ADVANCE doesn't currently support NONLINEAR_EXTRUSION."
     #elif ENABLED(INPUT_SHAPING_E_SYNC) && NONE(INPUT_SHAPING_X, INPUT_SHAPING_Y)
       #error "INPUT_SHAPING_E_SYNC requires INPUT_SHAPING_X or INPUT_SHAPING_Y."
     #endif
@@ -3725,7 +3723,7 @@ static_assert(NUM_SERVOS <= NUM_SERVO_PLUGS, "NUM_SERVOS (or some servo index) i
  * Check per-axis initializers for errors
  */
 
-#define __PLUS_TEST(I,A) && (sanity_arr_##A[_MIN(I,signed(COUNT(sanity_arr_##A)-1))] > 0)
+#define __PLUS_TEST(I,A) && (sanity_arr_##A[ALIM(I,sanity_arr_##A)] > 0)
 #define _PLUS_TEST(A) (1 REPEAT2(14,__PLUS_TEST,A))
 #if HAS_MULTI_EXTRUDER
   #define _EXTRA_NOTE " (Did you forget to enable DISTINCT_E_FACTORS?)"
